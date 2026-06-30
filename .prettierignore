@@ -12,6 +12,9 @@ LICENSE
 README.md
 *.hbs
 
+# Ignore EJS partials (incomplete HTML fragments)
+**/partials/**
+
 # Ignore configuration files
 .DS_Store
 .env

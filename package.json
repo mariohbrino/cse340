@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/mariohbrino/cse340#readme",
   "dependencies": {
+    "ejs": "^6.0.1",
     "express": "^5.2.1",
+    "prettier-plugin-ejs": "^1.0.3",
     "prettier-plugin-organize-imports": "^4.3.0"
   },
   "devDependencies": {
