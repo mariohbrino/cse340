@@ -1,0 +1,26 @@
+{
+  "name": "cse340",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon",
+    "start": "node --env-file .env src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariohbrino/cse340.git"
+  },
+  "author": "Mario Brino <mariobrino@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mariohbrino/cse340/issues"
+  },
+  "homepage": "https://github.com/mariohbrino/cse340#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
