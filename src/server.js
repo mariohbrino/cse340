@@ -1,5 +1,5 @@
 import express from "express";
-import { getFilePath, getPublicDirectoryPath } from "./utils/public-path.js";
+import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
 const PORT = process.env.PORT || 3000;
@@ -8,16 +8,22 @@ const app = express();
 
 app.use(express.static(getPublicDirectoryPath()));
 
+app.set("view engine", "ejs");
+app.set("views", getFolderPath("src/views"));
+
 app.get("/", (request, response) => {
-  response.sendFile(getFilePath("src/views/home.html"));
+  const title = "Home";
+  response.render("home", { title });
 });
 
 app.get("/organizations", (request, response) => {
-  response.sendFile(getFilePath("src/views/organizations.html"));
+  const title = "Our Partner Organizations";
+  response.render("organizations", { title });
 });
 
 app.get("/projects", (request, response) => {
-  response.sendFile(getFilePath("src/views/projects.html"));
+  const title = "Service Projects";
+  response.render("projects", { title });
 });
 
 app.listen(PORT, () => {

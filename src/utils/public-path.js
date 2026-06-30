@@ -10,6 +10,10 @@ export const getFilePath = (resourcePath) => {
   return path.join(projectRoot, resourcePath);
 };
 
+export const getFolderPath = (folderPath) => {
+  return path.join(projectRoot, folderPath);
+};
+
 export const getPublicDirectoryPath = () => {
   return path.join(projectRoot, "public");
 };
