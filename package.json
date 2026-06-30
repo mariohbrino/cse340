@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/mariohbrino/cse340#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "prettier-plugin-organize-imports": "^4.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
