@@ -26,6 +26,11 @@ app.get("/projects", (request, response) => {
   response.render("projects", { title });
 });
 
+app.get("/categories", (request, response) => {
+  const title = "Categories";
+  response.render("categories", { title });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running at http://127.0.0.1:${PORT}`);
   console.log(`Environment: ${NODE_ENV}`);
