@@ -1,4 +1,5 @@
 import express from "express";
+import { testConnection } from "./models/db.js";
 import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
@@ -31,7 +32,12 @@ app.get("/categories", (request, response) => {
   response.render("categories", { title });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  try {
+    await testConnection();
   console.log(`Server is running at http://127.0.0.1:${PORT}`);
   console.log(`Environment: ${NODE_ENV}`);
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+  }
 });
