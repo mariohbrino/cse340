@@ -1,5 +1,6 @@
 import express from "express";
 import { testConnection } from "./models/db.js";
+import { getAllOrganizations } from "./models/organizations.js";
 import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
@@ -17,9 +18,11 @@ app.get("/", (request, response) => {
   response.render("home", { title });
 });
 
-app.get("/organizations", (request, response) => {
+app.get("/organizations", async (request, response) => {
+  const organizations = await getAllOrganizations();
   const title = "Our Partner Organizations";
-  response.render("organizations", { title });
+
+  response.render("organizations", { title, organizations });
 });
 
 app.get("/projects", (request, response) => {
@@ -35,8 +38,8 @@ app.get("/categories", (request, response) => {
 app.listen(PORT, async () => {
   try {
     await testConnection();
-  console.log(`Server is running at http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${NODE_ENV}`);
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
   } catch (error) {
     console.error("Error connecting to the database:", error);
   }
