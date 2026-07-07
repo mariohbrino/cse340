@@ -1,5 +1,7 @@
 import { Pool } from "pg";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 /**
  * Connection pool for PostgreSQL database.
  *
@@ -14,10 +16,7 @@ import { Pool } from "pg";
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    ssl: {
-      required: true,
-      rejectUnauthorized: false,
-    },
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
   },
 });
 
