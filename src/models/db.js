@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 
-const isProduction = process.env.NODE_ENV === "production";
+const isSslEnabled = ["true", "1", "yes"].includes(process.env.ENABLE_SSL);
 
 /**
  * Connection pool for PostgreSQL database.
@@ -15,7 +15,7 @@ const isProduction = process.env.NODE_ENV === "production";
  */
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: isProduction ? false : { rejectUnauthorized: false },
+  ssl: isSslEnabled ? { rejectUnauthorized: false } : false,
 });
 
 /**
