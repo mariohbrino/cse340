@@ -1,3 +1,4 @@
+-- table name organization
 CREATE TABLE organization (
 	organization_id SERIAL PRIMARY KEY,
 	name VARCHAR(150) UNIQUE NOT NULL,

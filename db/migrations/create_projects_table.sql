@@ -1,3 +1,4 @@
+-- table name project
 CREATE TABLE project (
   project_id SERIAL PRIMARY KEY,
   organization_id INT REFERENCES organization(organization_id) NOT NULL,
