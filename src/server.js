@@ -1,6 +1,7 @@
 import express from "express";
 import { testConnection } from "./models/db.js";
 import { getAllOrganizations } from "./models/organizations.js";
+import { getAllProjects } from "./models/projects.js";
 import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
@@ -25,9 +26,10 @@ app.get("/organizations", async (request, response) => {
   response.render("organizations", { title, organizations });
 });
 
-app.get("/projects", (request, response) => {
+app.get("/projects", async (request, response) => {
+  const projects = await getAllProjects();
   const title = "Service Projects";
-  response.render("projects", { title });
+  response.render("projects", { title, projects });
 });
 
 app.get("/categories", (request, response) => {
