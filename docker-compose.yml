@@ -1,0 +1,22 @@
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  db_cse340:
+
+services:
+  db_cse340:
+    image: postgres:18.1-alpine
+    container_name: db_cse340
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cse340
+      POSTGRES_USER: cse340
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5445:5432
+    volumes:
+      - db_cse340:/var/lib/postgresql/data
+    networks:
+      - internal
