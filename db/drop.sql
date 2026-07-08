@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS category_project;
+DROP TABLE IF EXISTS category;
+DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS organization;
