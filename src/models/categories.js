@@ -5,7 +5,7 @@ const getAllCategories = async () => {
       SELECT
         category_id, name
       FROM
-        category;
+        public.category;
     `;
 
   const result = await db.query(query);
