@@ -1,4 +1,4 @@
--- table name organization
+-- table organization
 CREATE TABLE organization (
   organization_id SERIAL PRIMARY KEY,
   name VARCHAR(150) UNIQUE NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE organization (
   logo_filename VARCHAR(255) NOT NULL
 );
 
--- table name project
+-- table project
 CREATE TABLE project (
   project_id SERIAL PRIMARY KEY,
   organization_id INT REFERENCES organization(organization_id) NOT NULL,
@@ -17,24 +17,26 @@ CREATE TABLE project (
   date DATE NOT NULL
 );
 
--- table name category
+-- table category
 CREATE TABLE category (
   category_id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL
 );
 
--- table name category_project
+-- table category_project
 CREATE TABLE category_project (
   category_id INT NOT NULL REFERENCES category(category_id),
   project_id INT NOT NULL REFERENCES project(project_id),
   PRIMARY KEY (category_id, project_id)
 );
 
+-- insert organizations sample data
 INSERT INTO organization (name, description, contact_email, logo_filename) VALUES
 ('BrightFuture Builders', 'A nonprofit focused on improving community infrastructure through sustainable construction projects.', 'info@brightfuturebuilders.org', 'brightfuture-logo.png'),
 ('GreenHarvest Growers', 'An urban farming collective promoting food sustainability and education in local neighborhoods.', 'contact@greenharvest.org', 'greenharvest-logo.png'),
 ('UnityServe Volunteers', 'A volunteer coordination group supporting local charities and service initiatives.', 'hello@unityserve.org', 'unityserve-logo.png');
 
+-- insert projects sample data
 INSERT INTO project (organization_id, title, description, location, date) VALUES
 (1, 'Community Center Renovation', 'Renovating the Westside Community Center with sustainable materials and energy-efficient systems', 'Westside District', '2026-03-15'),
 (1, 'Solar Panel Installation Program', 'Installing solar panels on low-income housing to reduce energy costs and carbon footprint', 'Riverside Neighborhood', '2026-03-15'),
@@ -52,6 +54,7 @@ INSERT INTO project (organization_id, title, description, location, date) VALUES
 (3, 'Spring Park Cleanup Campaign', 'Organizing community volunteers for park maintenance and beautification efforts', 'Riverside Park', '2026-03-08'), 
 (3, 'Holiday Toy Drive', 'Collecting and distributing toys to children from low-income families during the holidays', 'Central Community Hub', '2026-03-08');
 
+-- insert categories sample data
 INSERT INTO category (name) VALUES
 ('Infrastructure & Construction'),
 ('Renewable Energy & Sustainability'),
@@ -62,6 +65,7 @@ INSERT INTO category (name) VALUES
 ('Transportation & Mobility'),
 ('Environmental Cleanup & Beautification');
 
+-- insert category_project sample data
 INSERT INTO category_project (category_id, project_id) VALUES
 (1, 1),
 (2, 1),
