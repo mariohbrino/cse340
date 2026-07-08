@@ -1,4 +1,5 @@
 import express from "express";
+import { getAllCategories } from "./models/categories.js";
 import { testConnection } from "./models/db.js";
 import { getAllOrganizations } from "./models/organizations.js";
 import { getAllProjects } from "./models/projects.js";
@@ -32,9 +33,10 @@ app.get("/projects", async (request, response) => {
   response.render("projects", { title, projects });
 });
 
-app.get("/categories", (request, response) => {
+app.get("/categories", async (request, response) => {
+  const categories = await getAllCategories();
   const title = "Categories";
-  response.render("categories", { title });
+  response.render("categories", { title, categories });
 });
 
 app.listen(PORT, async () => {
