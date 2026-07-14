@@ -1,5 +1,4 @@
 import express from "express";
-import { getAllCategories } from "./models/categories.js";
 import { testConnection } from "./models/db.js";
 import routes from "./routes.js";
 import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
@@ -29,12 +28,6 @@ app.use((request, response, next) => {
 });
 
 app.use(routes);
-
-app.get("/categories", async (request, response) => {
-  const categories = await getAllCategories();
-  const title = "Categories";
-  response.render("categories", { title, categories });
-});
 
 // Test route for 500 errors
 app.get("/test-error", (req, res, next) => {
