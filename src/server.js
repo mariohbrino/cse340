@@ -15,6 +15,14 @@ app.use(express.static(getPublicDirectoryPath()));
 app.set("view engine", "ejs");
 app.set("views", getFolderPath("src/views"));
 
+// Middleware to log all incoming requests in development mode
+app.use((request, response, next) => {
+  if (NODE_ENV === "development") {
+    console.log(`${request.method} ${request.url}`);
+  }
+  next();
+});
+
 app.get("/", (request, response) => {
   const title = "Home";
   response.render("home", { title });
