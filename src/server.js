@@ -23,6 +23,12 @@ app.use((request, response, next) => {
   next();
 });
 
+// Middlware to make NODE_ENV available in all templates
+app.use((request, response, next) => {
+  response.locals.NODE_ENV = NODE_ENV;
+  next();
+});
+
 app.get("/", (request, response) => {
   const title = "Home";
   response.render("home", { title });
