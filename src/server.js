@@ -3,6 +3,7 @@ import { getAllCategories } from "./models/categories.js";
 import { testConnection } from "./models/db.js";
 import { getAllOrganizations } from "./models/organizations.js";
 import { getAllProjects } from "./models/projects.js";
+import routes from "./routes.js";
 import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
@@ -29,10 +30,7 @@ app.use((request, response, next) => {
   next();
 });
 
-app.get("/", (request, response) => {
-  const title = "Home";
-  response.render("home", { title });
-});
+app.use(routes);
 
 app.get("/organizations", async (request, response) => {
   const organizations = await getAllOrganizations();
