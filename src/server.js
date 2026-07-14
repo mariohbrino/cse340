@@ -1,7 +1,6 @@
 import express from "express";
 import { getAllCategories } from "./models/categories.js";
 import { testConnection } from "./models/db.js";
-import { getAllOrganizations } from "./models/organizations.js";
 import { getAllProjects } from "./models/projects.js";
 import routes from "./routes.js";
 import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
@@ -31,13 +30,6 @@ app.use((request, response, next) => {
 });
 
 app.use(routes);
-
-app.get("/organizations", async (request, response) => {
-  const organizations = await getAllOrganizations();
-  const title = "Our Partner Organizations";
-
-  response.render("organizations", { title, organizations });
-});
 
 app.get("/projects", async (request, response) => {
   const projects = await getAllProjects();
