@@ -1,18 +1,37 @@
 <%- include('partials/header') %>
 <main>
   <h1><%= title %></h1>
-  <section>
-    <h2><%= organization.name %></h2>
-    <img src="/images/<%= organization.logo_filename %>" alt="<%= organization.description %>" />
-    <p>Description: <%= organization.description %></p>
-    <h3>Service Projects</h3>
-    <ul>
-      <% projects.forEach(project => { %>
-      <li>
-        <a href="/projects/<%= project.project_id %>"><%= project.title %></a>
-      </li>
-      <% }) %>
-    </ul>
-  </section>
+
+  <div class="detail-container">
+    <div class="detail-header">
+      <h2><%= organization.name %></h2>
+      <img
+        class="organization-logo"
+        src="/images/<%= organization.logo_filename %>"
+        alt="<%= organization.name %> logo"
+      />
+    </div>
+
+    <div class="detail-section">
+      <h3>About</h3>
+      <div class="description"><%= organization.description %></div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Service Projects</h3>
+
+      <% if (projects && projects.length > 0) { %>
+      <div class="organization-project-list">
+        <% projects.forEach(project => { %>
+        <a href="/projects/<%= project.project_id %>">
+          <div class="project-list-item"><%= project.title %></div>
+        </a>
+        <% }) %>
+      </div>
+      <% } else { %>
+      <div class="empty-state">No projects found for this organization.</div>
+      <% } %>
+    </div>
+  </div>
 </main>
 <%- include('partials/footer') %>

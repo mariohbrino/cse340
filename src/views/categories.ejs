@@ -1,12 +1,13 @@
 <%- include('partials/header') %>
 <main>
   <h1><%= title %></h1>
-  <ul>
+
+  <div class="grid-container">
     <% categories.forEach(category => { %>
-    <li>
+    <div class="category-card">
       <a href="/categories/<%= category.category_id %>"><%= category.name %></a>
-    </li>
+    </div>
     <% }) %>
-  </ul>
+  </div>
 </main>
 <%- include('partials/footer') %>

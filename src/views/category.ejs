@@ -1,18 +1,34 @@
 <%- include('partials/header') %>
 <main>
   <h1><%= title %></h1>
-  <section>
-    <h2><%= category.name %></h2>
-    <ul>
-      <% projects.forEach((project) => { %>
-      <li>
-        <a href="/projects/<%= project.project_id %>">
-          <%let projectDate = new Date(project.date); %> <%= projectDate.toLocaleDateString("en-US", { year: "numeric",
-          month: "long", day: "numeric" }) %>: <%= project.title %> (<%= project.organization_name %>)
-        </a>
-      </li>
-      <% }); %>
-    </ul>
-  </section>
+
+  <div class="detail-container">
+    <div class="detail-header">
+      <h2><%= category.name %></h2>
+    </div>
+
+    <div class="detail-section">
+      <h3>Projects in this Category</h3>
+
+      <% if (projects && projects.length > 0) { %>
+      <div class="project-list">
+        <% projects.forEach((project) => { %>
+        <div class="project-card">
+          <a href="/projects/<%= project.project_id %>">
+            <div class="project-date">
+              <% let projectDate = new Date(project.date); %> <%= projectDate.toLocaleDateString("en-US", { year:
+              "numeric", month: "long", day: "numeric" }) %>
+            </div>
+            <div class="project-title"><%= project.title %></div>
+            <div class="project-org"><%= project.organization_name %></div>
+          </a>
+        </div>
+        <% }); %>
+      </div>
+      <% } else { %>
+      <div class="empty-state">No projects found in this category.</div>
+      <% } %>
+    </div>
+  </div>
 </main>
 <%- include('partials/footer') %>
