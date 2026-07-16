@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+<main>
+  <h1><%= title %></h1>
+  <section>
+    <h2><%= category.name %></h2>
+    <ul>
+      <% projects.forEach((project) => { %>
+      <li>
+        <a href="/projects/<%= project.project_id %>">
+          <%let projectDate = new Date(project.date); %> <%= projectDate.toLocaleDateString("en-US", { year: "numeric",
+          month: "long", day: "numeric" }) %>: <%= project.title %> (<%= project.organization_name %>)
+        </a>
+      </li>
+      <% }); %>
+    </ul>
+  </section>
+</main>
+<%- include('partials/footer') %>

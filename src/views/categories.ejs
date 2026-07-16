@@ -4,7 +4,7 @@
   <ul>
     <% categories.forEach(category => { %>
     <li>
-      <%= category.name %>
+      <a href="/categories/<%= category.category_id %>"><%= category.name %></a>
     </li>
     <% }) %>
   </ul>

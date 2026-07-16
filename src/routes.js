@@ -1,6 +1,6 @@
 import express from "express";
 
-import { showCategoriesPage } from "./controllers/categories.js";
+import { showCategoriesPage, showCategoryDetailsPage } from "./controllers/categories.js";
 import { testErrorPage } from "./controllers/errors.js";
 import { showHomePage } from "./controllers/index.js";
 import { showOrganizationDetailsPage, showOrganizationsPage } from "./controllers/organizations.js";
@@ -15,6 +15,7 @@ router.get("/categories", showCategoriesPage);
 
 router.get("/organizations/:id", showOrganizationDetailsPage);
 router.get("/projects/:id", showProjectDetailsPage);
+router.get("/categories/:id", showCategoryDetailsPage);
 
 // error-handling routes
 router.get("/test-error", testErrorPage);

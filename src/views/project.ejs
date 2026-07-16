@@ -9,5 +9,15 @@
     month: "long", day: "numeric" }) %>
   </p>
   <p>Organization: <a href="/organizations/<%= project.organization_id %>"><%= project.organization_name %></a></p>
+  <ul>
+    <% if (categories && categories.length > 0) { %> <% categories.forEach(category => { %>
+    <li>
+      <a href="/categories/<%= category.category_id %>"><%= category.name %></a>
+    </li>
+    <% }); %>
+    <% } else { %>
+    <li>No categories available</li>
+    <% } %>
+  </ul>
 </main>
 <%- include('partials/footer') %>
