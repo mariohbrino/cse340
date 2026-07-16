@@ -641,12 +641,6 @@ footer p {
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
 }
 
-.projects-list-item a {
-  text-decoration: none;
-  color: var(--color-text-dark);
-  display: block;
-}
-
 .projects-list-date {
   color: var(--color-primary);
   font-weight: var(--font-weight-semibold);
@@ -655,15 +649,34 @@ footer p {
 }
 
 .projects-list-title {
-  color: var(--color-text-dark);
   font-size: 1.3rem;
   font-weight: var(--font-weight-semibold);
   margin-bottom: var(--spacing-xs);
 }
 
+.projects-list-title a {
+  color: var(--color-text-dark);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+.projects-list-title a:hover {
+  color: var(--color-primary);
+}
+
 .projects-list-org {
-  color: var(--color-text-medium);
   font-size: 1rem;
+}
+
+.projects-list-org a {
+  color: var(--color-text-medium);
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+.projects-list-org a:hover {
+  color: var(--color-secondary);
+  text-decoration: underline;
 }
 
 /* Responsive adjustments for listing pages */

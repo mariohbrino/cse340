@@ -6,15 +6,17 @@
     <h2>Upcoming Service Projects</h2>
 
     <% projects.forEach(project => { %>
+    <% let projectDate = new Date(project.date); %>
     <div class="projects-list-item">
-      <a href="/projects/<%= project.project_id %>">
-        <div class="projects-list-date">
-          <% let projectDate = new Date(project.date); %> <%= projectDate.toLocaleDateString("en-US", { year: "numeric",
-          month: "long", day: "numeric" }) %>
-        </div>
-        <div class="projects-list-title"><%= project.title %></div>
-        <div class="projects-list-org"><%= project.organization_name %></div>
-      </a>
+      <div class="projects-list-date">
+        <%= projectDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) %>
+      </div>
+      <div class="projects-list-title">
+        <a href="/projects/<%= project.project_id %>"><%= project.title %></a>
+      </div>
+      <div class="projects-list-org">
+        <a href="/organizations/<%= project.organization_id %>"><%= project.organization_name %></a>
+      </div>
     </div>
     <% }) %>
   </div>
