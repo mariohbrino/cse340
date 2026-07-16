@@ -7,7 +7,7 @@ const showCategoriesPage = async (request, response) => {
   response.render("categories", { title, categories });
 };
 
-const showCategoryDetailsPage = async (request, response) => {
+const showCategoryDetailsPage = async (request, response, next) => {
   const categoryId = request.params.id;
   const category = await getCategoryById(categoryId);
 
