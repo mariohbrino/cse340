@@ -9,13 +9,14 @@ const showProjectsPage = async (request, response) => {
   response.render("projects", { title, projects });
 };
 
-const showProjectDetailsPage = async (request, response) => {
+const showProjectDetailsPage = async (request, response, next) => {
   const projectId = request.params.id;
   const project = await getProjectDetails(projectId);
 
   if (!project) {
-    response.status(404).send("Project not found");
-    return;
+    const err = new Error("Project not found");
+    err.status = 404;
+    next(err);
   }
 
   const categories = await getCategoryByProjectId(projectId);
