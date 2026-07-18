@@ -14,7 +14,7 @@ const showCategoryDetailsPage = async (request, response, next) => {
   if (!category) {
     const err = new Error("Category not found");
     err.status = 404;
-    next(err);
+    return next(err);
   }
 
   const projects = await getProjectByCategoryId(categoryId);

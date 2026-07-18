@@ -1,7 +1,7 @@
 const handleNotFound = (req, res, next) => {
   const err = new Error("Page Not Found");
   err.status = 404;
-  next(err);
+  return next(err);
 };
 
 const errorHandler = (err, req, res, next) => {

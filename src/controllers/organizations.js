@@ -15,7 +15,7 @@ const showOrganizationDetailsPage = async (request, response, next) => {
   if (!organization) {
     const err = new Error("Organization not found");
     err.status = 404;
-    next(err);
+    return next(err);
   }
 
   const title = `Organization Details: ${organization.name}`;
