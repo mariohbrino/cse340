@@ -1,11 +1,11 @@
-import { getAllOrganizations, getOrganizationById } from "../models/organizations.js";
+import { createOrganization, getAllOrganizations, getOrganizationById } from "../models/organizations.js";
 import { getProjectByOrganizationId } from "../models/projects.js";
 
 const showOrganizationsPage = async (request, response) => {
   const organizations = await getAllOrganizations();
   const title = "Our Partner Organizations";
 
-  response.render("organizations", { title, organizations });
+  return response.render("organizations", { title, organizations });
 };
 
 const showOrganizationDetailsPage = async (request, response, next) => {
@@ -21,7 +21,21 @@ const showOrganizationDetailsPage = async (request, response, next) => {
   const title = `Organization Details: ${organization.name}`;
   const projects = await getProjectByOrganizationId(organizationId);
 
-  response.render("organization", { title, organization, projects });
+  return response.render("organization", { title, organization, projects });
 };
 
-export { showOrganizationDetailsPage, showOrganizationsPage };
+const showNewOrganizationForm = async (request, response) => {
+  const title = "Add New Organization";
+
+  return response.render("new-organization", { title });
+};
+
+const processNewOrganizationForm = async (request, response) => {
+  const { name, description, contactEmail } = request.body;
+  const logoFilename = "placeholder-logo.png"; // Use the placeholder logo for all new organizations
+
+  const organizationId = await createOrganization(name, description, contactEmail, logoFilename);
+  return response.redirect(`/organizations/${organizationId}`);
+};
+
+export { processNewOrganizationForm, showNewOrganizationForm, showOrganizationDetailsPage, showOrganizationsPage };

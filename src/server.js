@@ -11,6 +11,10 @@ const app = express();
 
 app.use(express.static(getPublicDirectoryPath()));
 
+// Express middleware to parse form data from request bodies
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // For handling JSON data from API requests
+
 app.set("view engine", "ejs");
 app.set("views", getFolderPath("src/views"));
 
