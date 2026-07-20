@@ -1,5 +1,30 @@
+import { body, validationResult } from "express-validator";
+
 import { createOrganization, getAllOrganizations, getOrganizationById } from "../models/organizations.js";
 import { getProjectByOrganizationId } from "../models/projects.js";
+
+// Define validation and sanitization rules for organization form
+// Define validation rules for organization form
+const organizationValidation = [
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage("Organization name is required")
+    .isLength({ min: 3, max: 150 })
+    .withMessage("Organization name must be between 3 and 150 characters"),
+  body("description")
+    .trim()
+    .notEmpty()
+    .withMessage("Organization description is required")
+    .isLength({ max: 500 })
+    .withMessage("Organization description cannot exceed 500 characters"),
+  body("contactEmail")
+    .normalizeEmail()
+    .notEmpty()
+    .withMessage("Contact email is required")
+    .isEmail()
+    .withMessage("Please provide a valid email address"),
+];
 
 const showOrganizationsPage = async (request, response) => {
   const organizations = await getAllOrganizations();
@@ -31,6 +56,18 @@ const showNewOrganizationForm = async (request, response) => {
 };
 
 const processNewOrganizationForm = async (request, response) => {
+  // Check for validation errors
+  const results = validationResult(request);
+  if (!results.isEmpty()) {
+    // Validation failed - loop through errors
+    results.array().forEach((error) => {
+      request.flash("error", error.msg);
+    });
+
+    // Redirect back to the new organization form
+    return response.redirect("/new-organization");
+  }
+
   const { name, description, contactEmail } = request.body;
   const logoFilename = "placeholder-logo.png"; // Use the placeholder logo for all new organizations
 
@@ -42,4 +79,10 @@ const processNewOrganizationForm = async (request, response) => {
   return response.redirect(`/organizations/${organizationId}`);
 };
 
-export { processNewOrganizationForm, showNewOrganizationForm, showOrganizationDetailsPage, showOrganizationsPage };
+export {
+  organizationValidation,
+  processNewOrganizationForm,
+  showNewOrganizationForm,
+  showOrganizationDetailsPage,
+  showOrganizationsPage,
+};

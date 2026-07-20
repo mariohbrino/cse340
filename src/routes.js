@@ -4,6 +4,7 @@ import { showCategoriesPage, showCategoryDetailsPage } from "./controllers/categ
 import { testErrorPage } from "./controllers/errors.js";
 import { showHomePage } from "./controllers/index.js";
 import {
+  organizationValidation,
   processNewOrganizationForm,
   showNewOrganizationForm,
   showOrganizationDetailsPage,
@@ -21,7 +22,7 @@ router.get("/projects/:id", showProjectDetailsPage);
 router.get("/organizations", showOrganizationsPage);
 router.get("/organizations/:id", showOrganizationDetailsPage);
 router.get("/new-organization", showNewOrganizationForm);
-router.post("/new-organization", processNewOrganizationForm);
+router.post("/new-organization", organizationValidation, processNewOrganizationForm);
 
 router.get("/categories", showCategoriesPage);
 router.get("/categories/:id", showCategoryDetailsPage);
