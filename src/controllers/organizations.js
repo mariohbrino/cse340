@@ -1,6 +1,11 @@
 import { body, validationResult } from "express-validator";
 
-import { createOrganization, getAllOrganizations, getOrganizationById } from "../models/organizations.js";
+import {
+  createOrganization,
+  getAllOrganizations,
+  getOrganizationById,
+  updateOrganization,
+} from "../models/organizations.js";
 import { getProjectByOrganizationId } from "../models/projects.js";
 
 // Define validation and sanitization rules for organization form
@@ -79,9 +84,60 @@ const processNewOrganizationForm = async (request, response) => {
   return response.redirect(`/organizations/${organizationId}`);
 };
 
+const showEditOrganizationForm = async (request, response, next) => {
+  const organizationId = request.params.id;
+  const organization = await getOrganizationById(organizationId);
+
+  if (!organization) {
+    const err = new Error("Organization not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  const title = `Edit Organization: ${organization.name}`;
+
+  return response.render("organizations/edit", { title, organization });
+};
+
+const processEditOrganizationForm = async (request, response, next) => {
+  const organizationId = request.params.id;
+  const organization = await getOrganizationById(organizationId);
+
+  if (!organization) {
+    const err = new Error("Organization not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  // Check for validation errors
+  const results = validationResult(request);
+  if (!results.isEmpty()) {
+    // Validation failed - loop through errors
+    results.array().forEach((error) => {
+      request.flash("error", error.msg);
+    });
+
+    // Redirect back to the edit organization form
+    return response.redirect(`/edit-organization/${organizationId}`);
+  }
+
+  const { name, description, contactEmail } = request.body;
+  const logoFilename = "placeholder-logo.png"; // Use the placeholder logo for update organization
+
+  // Update the organization in the database
+  await updateOrganization(organizationId, name, description, contactEmail, logoFilename);
+
+  // Set a success flash message
+  request.flash("success", "Organization updated successfully!");
+
+  return response.redirect(`/organizations/${organizationId}`);
+};
+
 export {
   organizationValidation,
+  processEditOrganizationForm,
   processNewOrganizationForm,
+  showEditOrganizationForm,
   showNewOrganizationForm,
   showOrganizationDetailsPage,
   showOrganizationsPage,
