@@ -30,7 +30,7 @@ const showOrganizationsPage = async (request, response) => {
   const organizations = await getAllOrganizations();
   const title = "Our Partner Organizations";
 
-  return response.render("organizations", { title, organizations });
+  return response.render("organizations/index", { title, organizations });
 };
 
 const showOrganizationDetailsPage = async (request, response, next) => {
@@ -46,13 +46,13 @@ const showOrganizationDetailsPage = async (request, response, next) => {
   const title = `Organization Details: ${organization.name}`;
   const projects = await getProjectByOrganizationId(organizationId);
 
-  return response.render("organization", { title, organization, projects });
+  return response.render("organizations/show", { title, organization, projects });
 };
 
 const showNewOrganizationForm = async (request, response) => {
   const title = "Add New Organization";
 
-  return response.render("new-organization", { title });
+  return response.render("organizations/create", { title });
 };
 
 const processNewOrganizationForm = async (request, response) => {
