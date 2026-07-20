@@ -6,7 +6,7 @@ const NUMBER_OF_UPCOMING_PROJECTS = 5;
 const showProjectsPage = async (request, response) => {
   const projects = await getUpcomingProjects(NUMBER_OF_UPCOMING_PROJECTS);
   const title = "Service Projects";
-  return response.render("projects", { title, projects });
+  return response.render("projects/index", { title, projects });
 };
 
 const showProjectDetailsPage = async (request, response, next) => {
@@ -22,7 +22,7 @@ const showProjectDetailsPage = async (request, response, next) => {
   const categories = await getCategoryByProjectId(projectId);
 
   const title = "Project Details";
-  return response.render("project", { title, project, categories });
+  return response.render("projects/show", { title, project, categories });
 };
 
 export { showProjectDetailsPage, showProjectsPage };
