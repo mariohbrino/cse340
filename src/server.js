@@ -1,4 +1,6 @@
 import express from "express";
+import session from "express-session";
+import flash from "./middleware/flash.js";
 import { testConnection } from "./models/db.js";
 import routes from "./routes.js";
 import { errorHandler, handleNotFound } from "./utils/error-handlers.js";
@@ -6,8 +8,22 @@ import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || "production";
 const PORT = process.env.PORT || 3000;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const app = express();
+
+// Set up session management
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 }, // Session expires after 1 hour of inactivity
+  }),
+);
+
+// Use flash message middleware
+app.use(flash);
 
 app.use(express.static(getPublicDirectoryPath()));
 
