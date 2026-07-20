@@ -25,16 +25,16 @@ const router = express.Router();
 router.get("/", showHomePage);
 
 router.get("/projects", showProjectsPage);
+router.get("/projects/create", showNewProjectForm);
+router.post("/projects", projectValidation, processNewProjectForm);
 router.get("/projects/:id", showProjectDetailsPage);
-router.get("/new-project", showNewProjectForm);
-router.post("/new-project", projectValidation, processNewProjectForm);
 
 router.get("/organizations", showOrganizationsPage);
+router.get("/organizations/create", showNewOrganizationForm);
+router.post("/organizations", organizationValidation, processNewOrganizationForm);
+router.get("/organizations/:id/edit", showEditOrganizationForm);
+router.post("/organizations/:id", organizationValidation, processEditOrganizationForm);
 router.get("/organizations/:id", showOrganizationDetailsPage);
-router.get("/new-organization", showNewOrganizationForm);
-router.post("/new-organization", organizationValidation, processNewOrganizationForm);
-router.get("/edit-organization/:id", showEditOrganizationForm);
-router.post("/edit-organization/:id", organizationValidation, processEditOrganizationForm);
 
 router.get("/categories", showCategoriesPage);
 router.get("/categories/:id", showCategoryDetailsPage);
