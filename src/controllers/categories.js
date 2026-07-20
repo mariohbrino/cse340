@@ -4,7 +4,7 @@ import { getProjectByCategoryId } from "../models/projects.js";
 const showCategoriesPage = async (request, response) => {
   const categories = await getAllCategories();
   const title = "Categories";
-  return response.render("categories", { title, categories });
+  return response.render("categories/index", { title, categories });
 };
 
 const showCategoryDetailsPage = async (request, response, next) => {
@@ -20,7 +20,7 @@ const showCategoryDetailsPage = async (request, response, next) => {
   const projects = await getProjectByCategoryId(categoryId);
 
   const title = "Category Details";
-  return response.render("category", { title, category, projects });
+  return response.render("categories/show", { title, category, projects });
 };
 
 export { showCategoriesPage, showCategoryDetailsPage };
