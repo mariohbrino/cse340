@@ -1,10 +1,13 @@
 import express from "express";
 
 import {
+  categoryValidation,
   processAssignCategoriesForm,
+  processNewCategoryForm,
   showAssignCategoriesForm,
   showCategoriesPage,
   showCategoryDetailsPage,
+  showNewCategoryForm,
 } from "./controllers/categories.js";
 import { testErrorPage } from "./controllers/errors.js";
 import { showHomePage } from "./controllers/index.js";
@@ -42,6 +45,8 @@ router.post("/organizations/:id", organizationValidation, processEditOrganizatio
 router.get("/organizations/:id", showOrganizationDetailsPage);
 
 router.get("/categories", showCategoriesPage);
+router.get("/categories/create", showNewCategoryForm);
+router.post("/categories", categoryValidation, processNewCategoryForm);
 router.get("/categories/assign/:projectId", showAssignCategoriesForm);
 router.post("/categories/assign/:projectId", processAssignCategoriesForm);
 router.get("/categories/:id", showCategoryDetailsPage);

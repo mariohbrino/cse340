@@ -1,10 +1,22 @@
+import { body, validationResult } from "express-validator";
+
 import {
+  createCategory,
   getAllCategories,
   getCategoryById,
   getCategoryByProjectId,
   updateCategoryAssignments,
 } from "../models/categories.js";
 import { getProjectByCategoryId, getProjectById, getProjectDetails } from "../models/projects.js";
+
+const categoryValidation = [
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage("Category name is required")
+    .isLength({ min: 3, max: 255 })
+    .withMessage("Category name must be between 3 and 255 characters"),
+];
 
 const showCategoriesPage = async (request, response) => {
   const categories = await getAllCategories();
@@ -26,6 +38,33 @@ const showCategoryDetailsPage = async (request, response, next) => {
 
   const title = "Category Details";
   return response.render("categories/show", { title, category, projects });
+};
+
+const showNewCategoryForm = async (request, response) => {
+  const title = "New Category";
+  return response.render("categories/create", { title });
+};
+
+const processNewCategoryForm = async (request, response) => {
+  // Check for validation errors
+  const results = validationResult(request);
+  if (!results.isEmpty()) {
+    // Validation failed - loop through errors
+    results.array().forEach((error) => {
+      request.flash("error", error.msg);
+    });
+
+    // Redirect back to the new organization form
+    return response.redirect("/categories/create");
+  }
+
+  const { name } = request.body;
+
+  const newCategoryId = await createCategory(name);
+
+  request.flash("success", "Category created successfully.");
+
+  return response.redirect(`/categories/${newCategoryId}`);
 };
 
 const showAssignCategoriesForm = async (request, response, next) => {
@@ -68,4 +107,12 @@ const processAssignCategoriesForm = async (request, response, next) => {
   return response.redirect(`/projects/${projectId}`);
 };
 
-export { processAssignCategoriesForm, showAssignCategoriesForm, showCategoriesPage, showCategoryDetailsPage };
+export {
+  categoryValidation,
+  processAssignCategoriesForm,
+  processNewCategoryForm,
+  showAssignCategoriesForm,
+  showCategoriesPage,
+  showCategoryDetailsPage,
+  showNewCategoryForm,
+};
