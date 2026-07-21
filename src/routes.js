@@ -36,6 +36,7 @@ const router = express.Router();
 
 router.get("/", showHomePage);
 
+// Project routes
 router.get("/projects", showProjectsPage);
 router.get("/projects/create", showNewProjectForm);
 router.post("/projects", projectValidation, processNewProjectForm);
@@ -43,6 +44,7 @@ router.get("/projects/:id/edit", showEditProjectForm);
 router.post("/projects/:id", projectValidation, processEditProjectForm);
 router.get("/projects/:id", showProjectDetailsPage);
 
+// Organization routes
 router.get("/organizations", showOrganizationsPage);
 router.get("/organizations/create", showNewOrganizationForm);
 router.post("/organizations", organizationValidation, processNewOrganizationForm);
@@ -50,6 +52,7 @@ router.get("/organizations/:id/edit", showEditOrganizationForm);
 router.post("/organizations/:id", organizationValidation, processEditOrganizationForm);
 router.get("/organizations/:id", showOrganizationDetailsPage);
 
+// Category routes
 router.get("/categories", showCategoriesPage);
 router.get("/categories/create", showNewCategoryForm);
 router.post("/categories", categoryValidation, processNewCategoryForm);
