@@ -1,6 +1,6 @@
 import { getCategoryByProjectId } from "../models/categories.js";
 import { getAllOrganizations } from "../models/organizations.js";
-import { createProject, getProjectDetails, getUpcomingProjects } from "../models/projects.js";
+import { createProject, getProjectDetails, getUpcomingProjects, updateProject } from "../models/projects.js";
 
 import { body, validationResult } from "express-validator";
 
@@ -87,4 +87,61 @@ const processNewProjectForm = async (request, response) => {
   return response.redirect(`/projects/${newProjectId}`);
 };
 
-export { processNewProjectForm, projectValidation, showNewProjectForm, showProjectDetailsPage, showProjectsPage };
+const showEditProjectForm = async (request, response, next) => {
+  const projectId = request.params.id;
+  const project = await getProjectDetails(projectId);
+
+  if (!project) {
+    const err = new Error("Project not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  const organizations = await getAllOrganizations();
+  const title = "Edit Project";
+
+  return response.render("projects/edit", { title, project, organizations });
+};
+
+const processEditProjectForm = async (request, response, next) => {
+  const projectId = request.params.id;
+  const project = await getProjectDetails(projectId);
+
+  if (!project) {
+    const err = new Error("Project not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  // Check for validation errors
+  const results = validationResult(request);
+  if (!results.isEmpty()) {
+    // Validation failed - loop through errors
+    results.array().forEach((error) => {
+      request.flash("error", error.msg);
+    });
+
+    // Redirect back to the edit project form
+    return response.redirect(`/projects/${projectId}/edit`);
+  }
+
+  // Update the project in the database
+  const { title, description, location, date, organizationId } = request.body;
+  const updatedProjectId = await updateProject(projectId, title, description, location, date, organizationId);
+
+  // Set a success flash message
+  request.flash("success", "Project updated successfully!");
+
+  // Redirect to the project details page
+  return response.redirect(`/projects/${updatedProjectId}`);
+};
+
+export {
+  processEditProjectForm,
+  processNewProjectForm,
+  projectValidation,
+  showEditProjectForm,
+  showNewProjectForm,
+  showProjectDetailsPage,
+  showProjectsPage,
+};

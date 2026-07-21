@@ -23,8 +23,10 @@ import {
   showOrganizationsPage,
 } from "./controllers/organizations.js";
 import {
+  processEditProjectForm,
   processNewProjectForm,
   projectValidation,
+  showEditProjectForm,
   showNewProjectForm,
   showProjectDetailsPage,
   showProjectsPage,
@@ -37,6 +39,8 @@ router.get("/", showHomePage);
 router.get("/projects", showProjectsPage);
 router.get("/projects/create", showNewProjectForm);
 router.post("/projects", projectValidation, processNewProjectForm);
+router.get("/projects/:id/edit", showEditProjectForm);
+router.post("/projects/:id", projectValidation, processEditProjectForm);
 router.get("/projects/:id", showProjectDetailsPage);
 
 router.get("/organizations", showOrganizationsPage);
