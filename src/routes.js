@@ -3,10 +3,12 @@ import express from "express";
 import {
   categoryValidation,
   processAssignCategoriesForm,
+  processEditCategoryForm,
   processNewCategoryForm,
   showAssignCategoriesForm,
   showCategoriesPage,
   showCategoryDetailsPage,
+  showEditCategoryForm,
   showNewCategoryForm,
 } from "./controllers/categories.js";
 import { testErrorPage } from "./controllers/errors.js";
@@ -49,6 +51,8 @@ router.get("/categories/create", showNewCategoryForm);
 router.post("/categories", categoryValidation, processNewCategoryForm);
 router.get("/categories/assign/:projectId", showAssignCategoriesForm);
 router.post("/categories/assign/:projectId", processAssignCategoriesForm);
+router.get("/categories/:id/edit", showEditCategoryForm);
+router.post("/categories/:id", categoryValidation, processEditCategoryForm);
 router.get("/categories/:id", showCategoryDetailsPage);
 
 // error-handling routes
