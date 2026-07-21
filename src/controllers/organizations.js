@@ -70,7 +70,7 @@ const processNewOrganizationForm = async (request, response) => {
     });
 
     // Redirect back to the new organization form
-    return response.redirect("/new-organization");
+    return response.redirect("/organizations/create");
   }
 
   const { name, description, contactEmail } = request.body;
@@ -118,7 +118,7 @@ const processEditOrganizationForm = async (request, response, next) => {
     });
 
     // Redirect back to the edit organization form
-    return response.redirect(`/edit-organization/${organizationId}`);
+    return response.redirect(`/organizations/${organizationId}`);
   }
 
   const { name, description, contactEmail } = request.body;

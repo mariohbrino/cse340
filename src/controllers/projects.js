@@ -72,7 +72,7 @@ const processNewProjectForm = async (request, response) => {
     });
 
     // Redirect back to the new project form
-    return response.redirect("/new-project");
+    return response.redirect("/projects/create");
   }
 
   const { title, description, location, date, organizationId } = request.body;
