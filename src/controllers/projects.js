@@ -1,5 +1,5 @@
 import { getCategoryByProjectId } from "../models/categories.js";
-import { getAllOrganizations } from "../models/organizations.js";
+import { getAllOrganizations, getOrganizationById } from "../models/organizations.js";
 import { createProject, getProjectDetails, getUpcomingProjects, updateProject } from "../models/projects.js";
 
 import { body, validationResult } from "express-validator";
@@ -77,6 +77,13 @@ const processNewProjectForm = async (request, response) => {
 
   const { title, description, location, date, organizationId } = request.body;
 
+  const organization = await getOrganizationById(organizationId);
+
+  if (!organization) {
+    request.flash("error", "Selected organization does not exist");
+    return response.redirect("/projects/create");
+  }
+
   // Create the new project in the database
   const newProjectId = await createProject(title, description, location, date, organizationId);
 
@@ -125,8 +132,15 @@ const processEditProjectForm = async (request, response, next) => {
     return response.redirect(`/projects/${projectId}/edit`);
   }
 
-  // Update the project in the database
   const { title, description, location, date, organizationId } = request.body;
+  const organization = await getOrganizationById(organizationId);
+
+  if (!organization) {
+    request.flash("error", "Selected organization does not exist");
+    return response.redirect(`/projects/${projectId}/edit`);
+  }
+
+  // Update the project in the database
   const updatedProjectId = await updateProject(projectId, title, description, location, date, organizationId);
 
   // Set a success flash message
