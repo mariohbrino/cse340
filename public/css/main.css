@@ -49,6 +49,7 @@
   --font-size-xl: 2.5rem;
 
   /* Font Weights */
+  --font-weight-light: 200;
   --font-weight-normal: 400;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
@@ -728,4 +729,53 @@ footer p {
   color: #0c5460;
   background-color: #d1ecf1;
   border-color: #bee5eb;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  background: var(--bg-white-overlay);
+  border-radius: var(--radius-md);
+  gap: var(--spacing-sm);
+}
+
+.registration-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.registration-form .form-group label {
+  color: var(--color-text-medium);
+  font-weight: var(--font-weight-light);
+}
+
+input {
+  padding: var(--spacing-xs);
+  border: 1px solid var(--color-text-lighter);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+}
+
+button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  transition: var(--transition-base);
+}
+
+button:hover {
+  background: var(--color-primary-dark);
+}
+
+button:disabled {
+  background: var(--color-text-lighter);
+  cursor: not-allowed;
 }

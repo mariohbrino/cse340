@@ -31,10 +31,14 @@ import {
   showProjectDetailsPage,
   showProjectsPage,
 } from "./controllers/projects.js";
+import { processRegistrationForm, showRegistrationPage, userValidation } from "./controllers/users.js";
 
 const router = express.Router();
 
 router.get("/", showHomePage);
+
+router.get("/register", showRegistrationPage);
+router.post("/register", userValidation, processRegistrationForm);
 
 // Project routes
 router.get("/projects", showProjectsPage);
