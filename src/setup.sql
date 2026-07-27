@@ -1,43 +1,72 @@
+DROP TABLE IF EXISTS "category_project";
+DROP TABLE IF EXISTS "category";
+DROP TABLE IF EXISTS "project";
+DROP TABLE IF EXISTS "organization";
+DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "role";
+
 -- table organization
-CREATE TABLE organization (
+CREATE TABLE IF NOT EXISTS "organization" (
   organization_id SERIAL PRIMARY KEY,
   name VARCHAR(150) UNIQUE NOT NULL,
   description TEXT NOT NULL,
   contact_email VARCHAR(150) NOT NULL,
-  logo_filename VARCHAR(255) NOT NULL
+  logo_filename VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- table project
-CREATE TABLE project (
+CREATE TABLE IF NOT EXISTS "project" (
   project_id SERIAL PRIMARY KEY,
-  organization_id INT REFERENCES organization(organization_id) NOT NULL,
+  organization_id INT REFERENCES "organization"(organization_id) NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   location TEXT NOT NULL,
-  date DATE NOT NULL
+  date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- table category
-CREATE TABLE category (
+CREATE TABLE IF NOT EXISTS "category" (
   category_id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
+  name VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- table category_project
-CREATE TABLE category_project (
-  category_id INT NOT NULL REFERENCES category(category_id),
-  project_id INT NOT NULL REFERENCES project(project_id),
-  PRIMARY KEY (category_id, project_id)
+CREATE TABLE IF NOT EXISTS "category_project" (
+  category_id INT NOT NULL REFERENCES "category"(category_id),
+  project_id INT NOT NULL REFERENCES "project"(project_id),
+  PRIMARY KEY (category_id, project_id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- table name role
+CREATE TABLE IF NOT EXISTS "role" (
+  role_id SERIAL PRIMARY KEY,
+  role_name VARCHAR(50) NOT NULL UNIQUE,
+  role_description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- table name user
+CREATE TABLE IF NOT EXISTS "user" (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER REFERENCES "role"(role_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- insert organizations sample data
-INSERT INTO organization (name, description, contact_email, logo_filename) VALUES
+INSERT INTO "organization" (name, description, contact_email, logo_filename) VALUES
 ('BrightFuture Builders', 'A nonprofit focused on improving community infrastructure through sustainable construction projects.', 'info@brightfuturebuilders.org', 'brightfuture-logo.png'),
 ('GreenHarvest Growers', 'An urban farming collective promoting food sustainability and education in local neighborhoods.', 'contact@greenharvest.org', 'greenharvest-logo.png'),
 ('UnityServe Volunteers', 'A volunteer coordination group supporting local charities and service initiatives.', 'hello@unityserve.org', 'unityserve-logo.png');
 
 -- insert projects sample data
-INSERT INTO project (organization_id, title, description, location, date) VALUES
+INSERT INTO "project" (organization_id, title, description, location, date) VALUES
 (1, 'Community Center Renovation', 'Renovating the Westside Community Center with sustainable materials and energy-efficient systems', 'Westside District', '2026-03-15'),
 (1, 'Solar Panel Installation Program', 'Installing solar panels on low-income housing to reduce energy costs and carbon footprint', 'Riverside Neighborhood', '2026-03-15'),
 (1, 'Maple Street Playground Construction', 'Building an accessible playground with sustainable materials for children of all abilities', 'Maple Street Park', '2026-04-22'),
@@ -55,7 +84,7 @@ INSERT INTO project (organization_id, title, description, location, date) VALUES
 (3, 'Holiday Toy Drive', 'Collecting and distributing toys to children from low-income families during the holidays', 'Central Community Hub', '2026-03-08');
 
 -- insert categories sample data
-INSERT INTO category (name) VALUES
+INSERT INTO "category" (name) VALUES
 ('Infrastructure & Construction'),
 ('Renewable Energy & Sustainability'),
 ('Community Spaces & Recreation'),
@@ -66,7 +95,7 @@ INSERT INTO category (name) VALUES
 ('Environmental Cleanup & Beautification');
 
 -- insert category_project sample data
-INSERT INTO category_project (category_id, project_id) VALUES
+INSERT INTO "category_project" (category_id, project_id) VALUES
 (1, 1),
 (2, 1),
 (2, 2),
@@ -97,3 +126,7 @@ INSERT INTO category_project (category_id, project_id) VALUES
 (3, 14),
 (6, 15),
 (5, 15);
+
+-- Seed with basic roles
+INSERT INTO "role" (role_name, role_description) VALUES ('user', 'Standard user with basic access');
+INSERT INTO "role" (role_name, role_description) VALUES ('admin', 'Administrator with full system access');

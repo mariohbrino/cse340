@@ -1,4 +1,6 @@
-DROP TABLE IF EXISTS category_project;
-DROP TABLE IF EXISTS category;
-DROP TABLE IF EXISTS project;
-DROP TABLE IF EXISTS organization;
+DROP TABLE IF EXISTS "category_project";
+DROP TABLE IF EXISTS "category";
+DROP TABLE IF EXISTS "project";
+DROP TABLE IF EXISTS "organization";
+DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "role";

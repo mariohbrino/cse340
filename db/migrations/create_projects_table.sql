@@ -1,9 +1,10 @@
 -- table name project
-CREATE TABLE project (
+CREATE TABLE IF NOT EXISTS "project" (
   project_id SERIAL PRIMARY KEY,
-  organization_id INT REFERENCES organization(organization_id) NOT NULL,
+  organization_id INT REFERENCES "organization"(organization_id) NOT NULL,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   location TEXT NOT NULL,
-  date DATE NOT NULL
+  date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
