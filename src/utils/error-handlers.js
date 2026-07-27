@@ -1,17 +1,20 @@
 const handleNotFound = (req, res, next) => {
-  const err = new Error("Page Not Found");
+  const err = new Error(`Page Not Found: ${req.method} ${req.originalUrl}`);
   err.status = 404;
   return next(err);
 };
 
 const errorHandler = (err, req, res, next) => {
-  // Log error details for debugging
-  console.error("Error occurred:", err.message);
-  console.error("Stack trace:", err.stack);
-
   // Determine status and template
   const status = err.status || 500;
   const template = status === 404 ? "404" : "500";
+
+  if (status === 404) {
+    console.warn(err.message);
+  } else {
+    console.error("Error occurred:", err.message);
+    console.error("Stack trace:", err.stack);
+  }
 
   // Prepare data for the template
   const context = {
