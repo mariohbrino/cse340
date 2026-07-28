@@ -1,12 +1,12 @@
 // Catch-all route for 404 errors
-const handleNotFoundMiddleware = (req, res, next) => {
-  const err = new Error(`Page Not Found: ${req.method} ${req.originalUrl}`);
+const handleNotFoundMiddleware = (request, response, next) => {
+  const err = new Error(`Page Not Found: ${request.method} ${request.originalUrl}`);
   err.status = 404;
   return next(err);
 };
 
 // Global error handler
-const errorHandlerMiddleware = (err, req, res, next) => {
+const errorHandlerMiddleware = (err, request, response, next) => {
   // Determine status and template
   const status = err.status || 500;
   const template = status === 404 ? "404" : "500";
@@ -26,7 +26,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   };
 
   // Render the appropriate error template
-  res.status(status).render(`errors/${template}`, context);
+  response.status(status).render(`errors/${template}`, context);
 };
 
 export { errorHandlerMiddleware, handleNotFoundMiddleware };

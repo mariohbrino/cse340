@@ -1,3 +1,11 @@
+const authenticationMiddleware = (request, response, next) => {
+  response.locals.isLoggedIn = false;
+  if (request.session && request.session.user) {
+    response.locals.isLoggedIn = true;
+  }
+  next();
+};
+
 const loggedInMiddleware = (request, response, next) => {
   // if user is logged in, then redirect to home page, otherwise continue to the next middleware
   if (request.session && request.session.user) {
@@ -19,4 +27,4 @@ const loggedOutMiddleware = (request, response, next) => {
   }
 };
 
-export { loggedInMiddleware, loggedOutMiddleware };
+export { authenticationMiddleware, loggedInMiddleware, loggedOutMiddleware };

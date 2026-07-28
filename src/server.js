@@ -1,10 +1,11 @@
 import express from "express";
-import { authenticationMiddleware } from "./middleware/authentication.js";
-import { errorHandlerMiddleware, handleNotFoundMiddleware } from "./middleware/error-handlers.js";
+
+import { authenticationMiddleware } from "./middleware/auth.js";
+import { setNodeEnvMiddleware } from "./middleware/env.js";
+import { errorHandlerMiddleware, handleNotFoundMiddleware } from "./middleware/error.js";
 import flash from "./middleware/flash.js";
-import { logDevelopMiddleware } from "./middleware/log-develop.js";
+import { logDevelopMiddleware } from "./middleware/logger.js";
 import { sessionMiddleware } from "./middleware/session.js";
-import { setNodeEnvMiddleware } from "./middleware/set-nodenv.js";
 import { testConnection } from "./models/db.js";
 import routes from "./routes.js";
 import { getFolderPath, getPublicDirectoryPath } from "./utils/public-path.js";

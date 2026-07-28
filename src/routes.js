@@ -40,7 +40,7 @@ import {
   showRegistrationPage,
   userValidation,
 } from "./controllers/users.js";
-import { loggedOutMiddleware } from "./middleware/logged.js";
+import { loggedOutMiddleware } from "./middleware/auth.js";
 
 const router = express.Router();
 
