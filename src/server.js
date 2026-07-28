@@ -1,4 +1,5 @@
 import express from "express";
+import { authenticationMiddleware } from "./middleware/authentication.js";
 import { errorHandlerMiddleware, handleNotFoundMiddleware } from "./middleware/error-handlers.js";
 import flash from "./middleware/flash.js";
 import { logDevelopMiddleware } from "./middleware/log-develop.js";
@@ -28,6 +29,7 @@ app.use(express.json()); // For handling JSON data from API requests
 app.set("view engine", "ejs");
 app.set("views", getFolderPath("src/views"));
 
+app.use(authenticationMiddleware);
 app.use(logDevelopMiddleware);
 app.use(setNodeEnvMiddleware);
 

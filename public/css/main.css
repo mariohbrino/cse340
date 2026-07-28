@@ -731,7 +731,8 @@ footer p {
   border-color: #bee5eb;
 }
 
-.registration-form {
+.registration-form,
+.login-form {
   display: flex;
   flex-direction: column;
   max-width: 400px;
@@ -742,13 +743,15 @@ footer p {
   gap: var(--spacing-sm);
 }
 
-.registration-form .form-group {
+.registration-form .form-group,
+.login-form .form-group {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
 }
 
-.registration-form .form-group label {
+.registration-form .form-group label,
+.login-form .form-group label {
   color: var(--color-text-medium);
   font-weight: var(--font-weight-light);
 }

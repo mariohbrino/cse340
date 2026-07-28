@@ -31,14 +31,26 @@ import {
   showProjectDetailsPage,
   showProjectsPage,
 } from "./controllers/projects.js";
-import { processRegistrationForm, showRegistrationPage, userValidation } from "./controllers/users.js";
+import {
+  authValidation,
+  processLoginForm,
+  processLogout,
+  processRegistrationForm,
+  showLoginForm,
+  showRegistrationPage,
+  userValidation,
+} from "./controllers/users.js";
+import { loggedOutMiddleware } from "./middleware/logged.js";
 
 const router = express.Router();
 
 router.get("/", showHomePage);
 
-router.get("/register", showRegistrationPage);
-router.post("/register", userValidation, processRegistrationForm);
+router.get("/register", loggedOutMiddleware, showRegistrationPage);
+router.post("/register", loggedOutMiddleware, userValidation, processRegistrationForm);
+router.get("/login", loggedOutMiddleware, showLoginForm);
+router.post("/login", loggedOutMiddleware, authValidation, processLoginForm);
+router.get("/logout", processLogout);
 
 // Project routes
 router.get("/projects", showProjectsPage);

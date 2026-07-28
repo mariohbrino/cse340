@@ -1,16 +1,18 @@
+import { verifyPassword } from "../utils/password.js";
 import db from "./db.js";
 
 const findUserByEmail = async (email) => {
   const query = `
     SELECT
-      user_id, name, email, role_id, created_at
+      user_id, name, email, role_id, password_hash, created_at
     FROM
       "user"
     WHERE
       email = $1;
   `;
 
-  const result = await db.query(query, [email]);
+  const queryParameters = [email];
+  const result = await db.query(query, queryParameters);
 
   return result.rows.length > 0 ? result.rows[0] : null;
 };
@@ -37,4 +39,23 @@ const createUser = async (name, email, hashPassword) => {
   return result.rows[0];
 };
 
-export { createUser, findUserByEmail };
+const authenticateUser = async (email, password) => {
+  const existingUser = await findUserByEmail(email);
+  if (!existingUser) {
+    return { isPasswordValid: false, user: null };
+  }
+
+  const isPasswordValid = await verifyPassword(password, existingUser.password_hash);
+  return {
+    isPasswordValid,
+    user: {
+      user_id: existingUser.user_id,
+      name: existingUser.name,
+      email: existingUser.email,
+      role_id: existingUser.role_id,
+      created_at: existingUser.created_at,
+    },
+  };
+};
+
+export { authenticateUser, createUser, findUserByEmail };
