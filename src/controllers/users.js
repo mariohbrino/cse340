@@ -120,7 +120,7 @@ const processLoginForm = async (request, response) => {
   // If login is successful, you can set session data or a cookie here
   request.session.user = user;
   request.flash("success", "Login successful!");
-  return response.redirect("/");
+  return response.redirect("/dashboard");
 };
 
 const processLogout = async (request, response) => {

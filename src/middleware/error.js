@@ -11,6 +11,14 @@ const errorHandlerMiddleware = (err, request, response, next) => {
   const status = err.status || 500;
   const template = status === 404 ? "404" : "500";
 
+  if (status === 403) {
+    if (response.locals.NODE_ENV === "development") {
+      console.log(`403 Forbidden: ${request.method} ${request.originalUrl}`);
+    }
+    request.flash("error", "You must be logged in to access that page.");
+    return response.redirect("/login");
+  }
+
   if (status === 404) {
     console.warn(err.message);
   } else {
