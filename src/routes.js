@@ -42,8 +42,11 @@ import {
   showProjectsPage,
 } from "./controllers/projects.js";
 import {
+  changePasswordValidation,
+  processChangePasswordForm,
   processCreateUserForm,
   processUserEditForm,
+  showChangePasswordForm,
   showCreateUserForm,
   showUserDetailsPage,
   showUserEditPage,
@@ -108,6 +111,14 @@ router.get("/users/create", loggedInMiddleware, requireRole("admin"), showCreate
 router.get("/users/:id", loggedInMiddleware, requireRole("admin"), showUserDetailsPage);
 router.post("/users", loggedInMiddleware, requireRole("admin"), userValidation, processCreateUserForm);
 router.get("/users/:id/edit", loggedInMiddleware, requireRole("admin"), showUserEditPage);
+router.get("/users/:id/password", loggedInMiddleware, requireRole("admin"), showChangePasswordForm);
+router.post(
+  "/users/:id/password",
+  loggedInMiddleware,
+  requireRole("admin"),
+  changePasswordValidation,
+  processChangePasswordForm,
+);
 router.post("/users/:id", loggedInMiddleware, requireRole("admin"), userValidation, processUserEditForm);
 
 // error-handling routes

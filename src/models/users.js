@@ -114,4 +114,26 @@ const updateUser = async (userId, name, email, roleId) => {
   return result.rows[0].user_id;
 };
 
-export { authenticateUser, createUser, findUserByEmail, getAllUsers, getUserById, updateUser };
+const updateUserPassword = async (userId, hashedPassword) => {
+  const query = `
+    UPDATE "user"
+    SET password_hash = $1
+    WHERE user_id = $2
+    RETURNING user_id;
+  `;
+
+  const queryParameters = [hashedPassword, userId];
+  const result = await db.query(query, queryParameters);
+
+  if (result.rows.length === 0) {
+    throw new Error("Failed to update user password");
+  }
+
+  if (process.env.ENABLE_SQL_LOGGING === "true") {
+    console.log("Updated password for user with ID:", result.rows[0].user_id);
+  }
+
+  return result.rows[0].user_id;
+};
+
+export { authenticateUser, createUser, findUserByEmail, getAllUsers, getUserById, updateUser, updateUserPassword };

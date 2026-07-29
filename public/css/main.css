@@ -812,3 +812,29 @@ button:disabled {
   padding: 0;
   color: var(--color-text-medium);
 }
+
+.change-password-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.user-detail-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-detail-header h2 {
+  font-size: 1.75rem;
+  color: var(--color-primary-dark);
+  margin: 0;
+}
+
+.user-detail-header p {
+  margin: 0;
+  padding: 0;
+}

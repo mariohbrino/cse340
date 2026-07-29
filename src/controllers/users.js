@@ -1,5 +1,5 @@
 import { getAllRoles, getRoleById } from "../models/roles.js";
-import { createUser, getAllUsers, getUserById, updateUser } from "../models/users.js";
+import { createUser, getAllUsers, getUserById, updateUser, updateUserPassword } from "../models/users.js";
 import { hashPassword } from "../utils/password.js";
 
 import { body, validationResult } from "express-validator";
@@ -18,12 +18,23 @@ const userValidation = [
     .isEmail()
     .withMessage("Please provide a valid email address"),
   body("password")
+    .if((value, { req }) => req.path === "/users" && req.method === "POST")
     .notEmpty()
-    .if((value, { req }) => req.path === "/users" || value)
     .withMessage("Password is required")
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long"),
   body("roleId").notEmpty().withMessage("Role is required").isInt().withMessage("Role must be a valid integer"),
+];
+
+const changePasswordValidation = [
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long"),
+  body("confirm_password")
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage("Passwords do not match"),
 ];
 
 const showUsersPage = async (request, response) => {
@@ -85,16 +96,24 @@ const showUserDetailsPage = async (request, response) => {
 
 const showUserEditPage = async (request, response) => {
   const userId = request.params.id;
-  const user = await getUserById(userId);
+  const userDetails = await getUserById(userId);
 
-  if (!user) {
+  if (!userDetails) {
     return response.status(404).send("User not found");
+  }
+
+  if (userDetails.user_id === request.session.user.user_id) {
+    request.flash(
+      "error",
+      "You cannot change your information from this page. Please use your profile settings to change your information",
+    );
+    return response.redirect(`/users/${userId}`);
   }
 
   const roles = await getAllRoles(); // Assuming you have a function to get all roles
 
-  const title = `Edit User - ${user.name}`;
-  return response.render("users/edit", { title, user, roles });
+  const title = `Edit User - ${userDetails.name}`;
+  return response.render("users/edit", { title, userDetails, roles });
 };
 
 const processUserEditForm = async (request, response) => {
@@ -112,11 +131,19 @@ const processUserEditForm = async (request, response) => {
     return response.redirect(`/users/${userId}/edit`);
   }
 
-  const user = await getUserById(userId);
+  const userDetails = await getUserById(userId);
 
-  if (!user) {
+  if (!userDetails) {
     request.flash("error", "Selected user does not exist");
     return response.redirect(`/users/${userId}/edit`);
+  }
+
+  if (userDetails.user_id === request.session.user.user_id) {
+    request.flash(
+      "error",
+      "You cannot change your information from this page. Please use your profile settings to change your information",
+    );
+    return response.redirect(`/users/${userId}`);
   }
 
   const { name, email, roleId } = request.body;
@@ -134,9 +161,77 @@ const processUserEditForm = async (request, response) => {
   return response.redirect(`/users/${updatedUserId}`);
 };
 
+const showChangePasswordForm = async (request, response) => {
+  const userId = request.params.id;
+  const userDetails = await getUserById(userId);
+
+  if (!userDetails) {
+    request.flash("error", "User not found");
+    return response.redirect(`/users/${userId}/password`);
+  }
+
+  if (userDetails.user_id === request.session.user.user_id) {
+    request.flash(
+      "error",
+      "You cannot change your own password from this page. Please use your profile settings to change your password",
+    );
+    return response.redirect(`/users/${userId}`);
+  }
+
+  const title = "Change User Password";
+  return response.render("users/password", { title, userDetails });
+};
+
+const processChangePasswordForm = async (request, response) => {
+  const userId = request.params.id;
+
+  // Check for validation errors
+  const results = validationResult(request);
+  if (!results.isEmpty()) {
+    // Validation failed - loop through errors
+    results.array().forEach((error) => {
+      request.flash("error", error.msg);
+    });
+
+    // Redirect back to the edit user form
+    return response.redirect(`/users/${userId}/password`);
+  }
+
+  const userDetails = await getUserById(userId);
+  if (!userDetails) {
+    request.flash("error", "User not found");
+    return response.redirect(`/users/${userId}/password`);
+  }
+
+  if (userDetails.user_id === request.session.user.user_id) {
+    request.flash(
+      "error",
+      "You cannot change your own password from this page. Please use your profile settings to change your password",
+    );
+    return response.redirect(`/users/${userId}/password`);
+  }
+
+  try {
+    // Process the password change
+    const { password } = request.body;
+
+    const hashedPassword = await hashPassword(password);
+    await updateUserPassword(userId, hashedPassword);
+    request.flash("success", "Password updated successfully");
+    return response.redirect(`/users/${userId}`);
+  } catch (error) {
+    console.error("Error updating password:", error);
+    request.flash("error", "An error occurred while updating the password. Please try again.");
+    return response.redirect(`/users/${userId}/password`);
+  }
+};
+
 export {
+  changePasswordValidation,
+  processChangePasswordForm,
   processCreateUserForm,
   processUserEditForm,
+  showChangePasswordForm,
   showCreateUserForm,
   showUserDetailsPage,
   showUserEditPage,

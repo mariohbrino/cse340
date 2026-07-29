@@ -4,9 +4,9 @@
 
   <div class="detail-container">
     <div class="detail-header">
-      <h2><%= user.name %></h2>
+      <h2><%= userDetails.name %></h2>
       <% if (user && user.role_name === 'admin') { %>
-      <a href="/users/<%= user.user_id %>/edit">Edit</a>
+      <a href="/users/<%= userDetails.user_id %>/edit">Edit</a>
       <% } %>
     </div>
 
@@ -26,6 +26,11 @@
           <strong>Created at:</strong>
           <%= new Date(userDetails.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day:
       "numeric" }) %>
+        </p>
+        <p>
+          <% if (user && user.role_name === 'admin') { %>
+          <a class="change-password-link" href="/users/<%= userDetails.user_id %>/password">Change Password</a>
+          <% } %>
         </p>
       </div>
     </div>

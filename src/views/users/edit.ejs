@@ -2,7 +2,7 @@
 <main>
     <h1><%= title %></h1>
 
- <form action="/users/<%= user.user_id %>" method="POST">
+ <form action="/users/<%= userDetails.user_id %>" method="POST">
     <div class="form-group">
       <label for="name">Name</label>
       <input
@@ -11,7 +11,7 @@
         name="name"
         maxlength="150"
         required
-        value="<%= user.name %>"
+        value="<%= userDetails.name %>"
       />
     </div>
 
@@ -23,7 +23,7 @@
         name="email"
         maxlength="200"
         required
-        value="<%= user.email %>"
+        value="<%= userDetails.email %>"
       />
     </div>
 
@@ -36,7 +36,7 @@
       >
         <option value="">Select an role</option>
         <% roles.forEach(role => { %>
-          <option value="<%= role.role_id %>" <%= role.role_id === user.role_id ? 'selected' : '' %>><%= role.role_name %></option>
+          <option value="<%= role.role_id %>" <%= role.role_id === userDetails.role_id ? 'selected' : '' %>><%= role.role_name %></option>
         <% }); %>
       </select>
     </div>
