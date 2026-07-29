@@ -10,7 +10,9 @@
         src="/images/<%= organization.logo_filename %>"
         alt="<%= organization.name %> logo"
       />
+      <% if (user && user.role_name === 'admin') { %>
       <a href="/organizations/<%= organization.organization_id %>/edit">Edit</a>
+      <% } %>
     </div>
 
     <div class="detail-section">

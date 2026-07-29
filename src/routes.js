@@ -42,6 +42,7 @@ import {
   userValidation,
 } from "./controllers/users.js";
 import { loggedInMiddleware, loggedOutMiddleware } from "./middleware/auth.js";
+import { requireRole } from "./middleware/role.js";
 
 const router = express.Router();
 
@@ -56,28 +57,40 @@ router.get("/logout", loggedInMiddleware, processLogout);
 
 // Project routes
 router.get("/projects", showProjectsPage);
-router.get("/projects/create", loggedInMiddleware, showNewProjectForm);
-router.post("/projects", loggedInMiddleware, projectValidation, processNewProjectForm);
-router.get("/projects/:id/edit", loggedInMiddleware, showEditProjectForm);
-router.post("/projects/:id", loggedInMiddleware, projectValidation, processEditProjectForm);
+router.get("/projects/create", loggedInMiddleware, requireRole("admin"), showNewProjectForm);
+router.post("/projects", loggedInMiddleware, requireRole("admin"), projectValidation, processNewProjectForm);
+router.get("/projects/:id/edit", loggedInMiddleware, requireRole("admin"), showEditProjectForm);
+router.post("/projects/:id", loggedInMiddleware, requireRole("admin"), projectValidation, processEditProjectForm);
 router.get("/projects/:id", showProjectDetailsPage);
 
 // Organization routes
 router.get("/organizations", showOrganizationsPage);
-router.get("/organizations/create", loggedInMiddleware, showNewOrganizationForm);
-router.post("/organizations", loggedInMiddleware, organizationValidation, processNewOrganizationForm);
-router.get("/organizations/:id/edit", loggedInMiddleware, showEditOrganizationForm);
-router.post("/organizations/:id", loggedInMiddleware, organizationValidation, processEditOrganizationForm);
+router.get("/organizations/create", loggedInMiddleware, requireRole("admin"), showNewOrganizationForm);
+router.post(
+  "/organizations",
+  loggedInMiddleware,
+  requireRole("admin"),
+  organizationValidation,
+  processNewOrganizationForm,
+);
+router.get("/organizations/:id/edit", loggedInMiddleware, requireRole("admin"), showEditOrganizationForm);
+router.post(
+  "/organizations/:id",
+  loggedInMiddleware,
+  requireRole("admin"),
+  organizationValidation,
+  processEditOrganizationForm,
+);
 router.get("/organizations/:id", showOrganizationDetailsPage);
 
 // Category routes
 router.get("/categories", showCategoriesPage);
-router.get("/categories/create", loggedInMiddleware, showNewCategoryForm);
-router.post("/categories", loggedInMiddleware, categoryValidation, processNewCategoryForm);
-router.get("/categories/assign/:projectId", loggedInMiddleware, showAssignCategoriesForm);
-router.post("/categories/assign/:projectId", loggedInMiddleware, processAssignCategoriesForm);
-router.get("/categories/:id/edit", loggedInMiddleware, showEditCategoryForm);
-router.post("/categories/:id", loggedInMiddleware, categoryValidation, processEditCategoryForm);
+router.get("/categories/create", loggedInMiddleware, requireRole("admin"), showNewCategoryForm);
+router.post("/categories", loggedInMiddleware, requireRole("admin"), categoryValidation, processNewCategoryForm);
+router.get("/categories/assign/:projectId", loggedInMiddleware, requireRole("admin"), showAssignCategoriesForm);
+router.post("/categories/assign/:projectId", loggedInMiddleware, requireRole("admin"), processAssignCategoriesForm);
+router.get("/categories/:id/edit", loggedInMiddleware, requireRole("admin"), showEditCategoryForm);
+router.post("/categories/:id", loggedInMiddleware, requireRole("admin"), categoryValidation, processEditCategoryForm);
 router.get("/categories/:id", showCategoryDetailsPage);
 
 // error-handling routes

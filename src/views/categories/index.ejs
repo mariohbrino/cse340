@@ -2,9 +2,11 @@
 <main>
   <h1><%= title %></h1>
 
+  <% if (user && user.role_name === 'admin') { %>
   <p>
     <a href="/categories/create" class="button">Create New Category</a>
   </p>
+  <% } %>
 
   <div class="grid-container">
     <% categories.forEach(category => { %>

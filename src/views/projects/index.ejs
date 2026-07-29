@@ -5,9 +5,11 @@
   <div class="projects-list">
     <h2>Upcoming Service Projects</h2>
 
+    <% if (user && user.role_name === 'admin') { %>
     <p>
       <a class="new-project-button" href="/projects/create">Add a New Service Project</a>
     </p>
+    <% } %>
 
     <% projects.forEach(project => { %>
     <% let projectDate = new Date(project.date); %>

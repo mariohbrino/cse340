@@ -2,9 +2,11 @@
 <main>
   <h1><%= title %></h1>
 
+  <% if (user && user.role_name === 'admin') { %>
   <p>
     <a class="new-organization-button" href="/organizations/create">Add a new organization</a>
   </p>
+  <% } %>
 
   <p class="intro-text">Here are a few of our partner organizations:</p>
 

@@ -3,6 +3,9 @@ const authenticationMiddleware = (request, response, next) => {
   if (request.session && request.session.user) {
     response.locals.isLoggedIn = true;
   }
+
+  response.locals.user = request.session.user || null;
+
   next();
 };
 

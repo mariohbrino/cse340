@@ -4,11 +4,12 @@ import db from "./db.js";
 const findUserByEmail = async (email) => {
   const query = `
     SELECT
-      user_id, name, email, role_id, password_hash, created_at
+      u.user_id, u.name, u.email, u.role_id, u.password_hash, u.created_at, r.role_name
     FROM
-      "user"
+      "user" "u"
+    JOIN "role" "r" ON u.role_id = r.role_id
     WHERE
-      email = $1;
+      u.email = $1;
   `;
 
   const queryParameters = [email];
@@ -53,6 +54,7 @@ const authenticateUser = async (email, password) => {
       name: existingUser.name,
       email: existingUser.email,
       role_id: existingUser.role_id,
+      role_name: existingUser.role_name,
       created_at: existingUser.created_at,
     },
   };
