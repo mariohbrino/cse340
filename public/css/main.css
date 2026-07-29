@@ -449,13 +449,15 @@ footer p {
 
 /* Project List Styles */
 .project-list,
-.organization-project-list {
+.organization-project-list,
+.users-list {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
 }
 
-.project-list-item {
+.project-list-item,
+.users-list-item {
   background: white;
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
@@ -781,4 +783,32 @@ button:hover {
 button:disabled {
   background: var(--color-text-lighter);
   cursor: not-allowed;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.user-details-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: var(--bg-white-overlay);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.user-details h3 {
+  font-size: 1.5rem;
+  color: var(--color-primary-dark);
+}
+
+.user-details-section p {
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-medium);
 }

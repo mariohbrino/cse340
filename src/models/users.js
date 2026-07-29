@@ -18,6 +18,38 @@ const findUserByEmail = async (email) => {
   return result.rows.length > 0 ? result.rows[0] : null;
 };
 
+const getUserById = async (userId) => {
+  const query = `
+    SELECT
+      u.user_id, u.name, u.email, u.role_id, u.password_hash, u.created_at, r.role_name
+    FROM
+      "user" "u"
+    JOIN "role" "r" ON u.role_id = r.role_id
+    WHERE
+      u.user_id = $1;
+  `;
+
+  const queryParameters = [userId];
+  const result = await db.query(query, queryParameters);
+
+  return result.rows.length > 0 ? result.rows[0] : null;
+};
+
+const getAllUsers = async () => {
+  const query = `
+    SELECT
+      u.user_id, u.name, u.email, u.role_id, r.role_name, u.created_at
+    FROM
+      public.user u
+    JOIN
+      public.role r ON u.role_id = r.role_id;
+  `;
+
+  const result = await db.query(query);
+
+  return result.rows;
+};
+
 const createUser = async (name, email, hashPassword) => {
   const defaultRole = "user";
   const query = `
@@ -60,4 +92,26 @@ const authenticateUser = async (email, password) => {
   };
 };
 
-export { authenticateUser, createUser, findUserByEmail };
+const updateUser = async (userId, name, email, roleId) => {
+  const query = `
+    UPDATE "user"
+    SET name = $1, email = $2, role_id = $3
+    WHERE user_id = $4
+    RETURNING user_id, name, email, role_id, created_at;
+  `;
+
+  const queryParameters = [name, email, roleId, userId];
+  const result = await db.query(query, queryParameters);
+
+  if (result.rows.length === 0) {
+    throw new Error("Failed to update user");
+  }
+
+  if (process.env.ENABLE_SQL_LOGGING === "true") {
+    console.log("Updated user with ID:", result.rows[0]);
+  }
+
+  return result.rows[0].user_id;
+};
+
+export { authenticateUser, createUser, findUserByEmail, getAllUsers, getUserById, updateUser };

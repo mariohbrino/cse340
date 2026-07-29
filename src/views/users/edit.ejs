@@ -1,0 +1,47 @@
+<%- include('../partials/header') %>
+<main>
+    <h1><%= title %></h1>
+
+ <form action="/users/<%= user.user_id %>" method="POST">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        maxlength="150"
+        required
+        value="<%= user.name %>"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        maxlength="200"
+        required
+        value="<%= user.email %>"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="roleId">Role</label>
+      <select
+        id="roleId"
+        name="roleId"
+        required
+      >
+        <option value="">Select an role</option>
+        <% roles.forEach(role => { %>
+          <option value="<%= role.role_id %>" <%= role.role_id === user.role_id ? 'selected' : '' %>><%= role.role_name %></option>
+        <% }); %>
+      </select>
+    </div>
+
+    <button type="submit">Update User</button>
+
+</main>
+<%- include('../partials/footer') %>

@@ -1,0 +1,34 @@
+<%- include('../partials/header') %>
+<main>
+  <h1><%= title %></h1>
+
+  <div class="users-list">
+    <% if (user && user.role_name === 'admin') { %>
+    <p>
+      <a class="new-project-button" href="/users/create">Add a New User</a>
+    </p>
+    <% } %>
+
+    <% users.forEach(user => { %>
+    <div class="users-list-item">
+      <div class="users-list-name">
+        <a href="/users/<%= user.user_id %>"><%= user.name %></a>
+      </div>
+      <div class="users-list-email">
+        <span>Email:</span>
+        <%= user.email %>
+      </div>
+      <div class="users-list-role">
+        <span>Role:</span>
+        <%= user.role_name %>
+      </div>
+      <div class="users-list-created">
+        <span>Created at:</span>
+        <%= new Date(user.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day:
+        "numeric" }) %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

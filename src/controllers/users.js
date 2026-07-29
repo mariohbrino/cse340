@@ -1,4 +1,5 @@
-import { authenticateUser, createUser, findUserByEmail } from "../models/users.js";
+import { getAllRoles, getRoleById } from "../models/roles.js";
+import { createUser, getAllUsers, getUserById, updateUser } from "../models/users.js";
 import { hashPassword } from "../utils/password.js";
 
 import { body, validationResult } from "express-validator";
@@ -8,50 +9,38 @@ const userValidation = [
     .trim()
     .notEmpty()
     .withMessage("Name is required")
-    .isLength({ min: 3, max: 30 })
-    .withMessage("Name must be between 3 and 30 characters"),
+    .isLength({ min: 3, max: 200 })
+    .withMessage("Name must be between 3 and 200 characters"),
   body("email")
     .normalizeEmail()
     .notEmpty()
-    .withMessage("Email is required")
-    .isEmail()
-    .withMessage("Please provide a valid email address")
-    .custom(async (email) => {
-      const existingUser = await findUserByEmail(email);
-      if (existingUser) {
-        throw new Error("Email is already in use");
-      }
-    }),
-  body("password")
-    .notEmpty()
-    .withMessage("Password is required")
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters long"),
-  body("confirm_password")
-    .custom((value, { req }) => value === req.body.password)
-    .withMessage("Passwords do not match"),
-];
-
-const authValidation = [
-  body("email")
-    .normalizeEmail()
-    .notEmpty()
-    .withMessage("Email is required")
+    .withMessage("User email is required")
     .isEmail()
     .withMessage("Please provide a valid email address"),
   body("password")
     .notEmpty()
+    .if((value, { req }) => req.path === "/users" || value)
     .withMessage("Password is required")
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters long"),
+  body("roleId").notEmpty().withMessage("Role is required").isInt().withMessage("Role must be a valid integer"),
 ];
 
-const showRegistrationPage = async (request, response) => {
-  const title = "Register";
-  return response.render("users/register", { title });
+const showUsersPage = async (request, response) => {
+  const users = await getAllUsers();
+
+  const title = "Users";
+  return response.render("users/index", { title, users });
 };
 
-const processRegistrationForm = async (request, response) => {
+const showCreateUserForm = async (request, response) => {
+  const roles = await getAllRoles();
+
+  const title = "Create User";
+  return response.render("users/create", { title, roles });
+};
+
+const processCreateUserForm = async (request, response) => {
   // Check for validation errors
   const results = validationResult(request);
   if (!results.isEmpty()) {
@@ -61,7 +50,7 @@ const processRegistrationForm = async (request, response) => {
     });
 
     // Redirect back to the registration form
-    return response.redirect("/register");
+    return response.redirect("/users/create");
   }
 
   const { name, email, password } = request.body;
@@ -74,20 +63,43 @@ const processRegistrationForm = async (request, response) => {
     request.flash("success", `User ${newUser.name} registered successfully!`);
 
     // If successful, redirect to the login page or another appropriate page
-    return response.redirect("/login");
+    return response.redirect("/users");
   } catch (error) {
     console.error("Error registering user:", error);
     request.flash("error", "An error occurred while registering. Please try again.");
-    return response.redirect("/register");
+    return response.redirect("/users/create");
   }
 };
 
-const showLoginForm = async (request, response) => {
-  const title = "Login";
-  return response.render("users/login", { title });
+const showUserDetailsPage = async (request, response) => {
+  const userId = request.params.id;
+  const userDetails = await getUserById(userId);
+
+  if (!userDetails) {
+    return response.status(404).send("User not found");
+  }
+
+  const title = `User Details - ${userDetails.name}`;
+  return response.render("users/show", { title, userDetails });
 };
 
-const processLoginForm = async (request, response) => {
+const showUserEditPage = async (request, response) => {
+  const userId = request.params.id;
+  const user = await getUserById(userId);
+
+  if (!user) {
+    return response.status(404).send("User not found");
+  }
+
+  const roles = await getAllRoles(); // Assuming you have a function to get all roles
+
+  const title = `Edit User - ${user.name}`;
+  return response.render("users/edit", { title, user, roles });
+};
+
+const processUserEditForm = async (request, response) => {
+  const userId = request.params.id;
+
   // Check for validation errors
   const results = validationResult(request);
   if (!results.isEmpty()) {
@@ -96,50 +108,38 @@ const processLoginForm = async (request, response) => {
       request.flash("error", error.msg);
     });
 
-    // Redirect back to the login form
-    return response.redirect("/login");
+    // Redirect back to the edit user form
+    return response.redirect(`/users/${userId}/edit`);
   }
 
-  const { email, password } = request.body;
-  const { isPasswordValid, user } = await authenticateUser(email, password);
+  const user = await getUserById(userId);
 
   if (!user) {
-    request.flash("error", "Invalid email or password");
-    return response.redirect("/login");
+    request.flash("error", "Selected user does not exist");
+    return response.redirect(`/users/${userId}/edit`);
   }
 
-  if (!isPasswordValid) {
-    request.flash("error", "Invalid email or password");
-    return response.redirect("/login");
+  const { name, email, roleId } = request.body;
+  const role = await getRoleById(roleId);
+
+  if (!role) {
+    request.flash("error", "Selected role does not exist");
+    return response.redirect(`/users/${userId}/edit`);
   }
 
-  if (response.locals.NODE_ENV === "development") {
-    console.log("User logged in:", user);
-  }
+  // Update the user in the database
+  const updatedUserId = await updateUser(userId, name, email, roleId);
 
-  // If login is successful, you can set session data or a cookie here
-  request.session.user = user;
-  request.flash("success", "Login successful!");
-  return response.redirect("/dashboard");
-};
-
-const processLogout = async (request, response) => {
-  request.session.destroy((err) => {
-    if (err) {
-      console.error("Error logging out:", err);
-      request.flash("error", "An error occurred while logging out. Please try again.");
-      return response.redirect("/");
-    }
-    return response.redirect("/login");
-  });
+  // Redirect to the user's details page after successful update
+  return response.redirect(`/users/${updatedUserId}`);
 };
 
 export {
-  authValidation,
-  processLoginForm,
-  processLogout,
-  processRegistrationForm,
-  showLoginForm,
-  showRegistrationPage,
+  processCreateUserForm,
+  processUserEditForm,
+  showCreateUserForm,
+  showUserDetailsPage,
+  showUserEditPage,
+  showUsersPage,
   userValidation,
 };

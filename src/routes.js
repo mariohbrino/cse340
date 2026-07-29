@@ -1,6 +1,15 @@
 import express from "express";
 
 import {
+  authValidation,
+  processLoginForm,
+  processLogout,
+  processRegistrationForm,
+  registerValidation,
+  showLoginForm,
+  showRegistrationPage,
+} from "./controllers/auth.js";
+import {
   categoryValidation,
   processAssignCategoriesForm,
   processEditCategoryForm,
@@ -33,12 +42,12 @@ import {
   showProjectsPage,
 } from "./controllers/projects.js";
 import {
-  authValidation,
-  processLoginForm,
-  processLogout,
-  processRegistrationForm,
-  showLoginForm,
-  showRegistrationPage,
+  processCreateUserForm,
+  processUserEditForm,
+  showCreateUserForm,
+  showUserDetailsPage,
+  showUserEditPage,
+  showUsersPage,
   userValidation,
 } from "./controllers/users.js";
 import { loggedInMiddleware, loggedOutMiddleware } from "./middleware/auth.js";
@@ -50,7 +59,7 @@ router.get("/", showHomePage);
 router.get("/dashboard", loggedInMiddleware, showDashboard);
 
 router.get("/register", loggedOutMiddleware, showRegistrationPage);
-router.post("/register", loggedOutMiddleware, userValidation, processRegistrationForm);
+router.post("/register", loggedOutMiddleware, registerValidation, processRegistrationForm);
 router.get("/login", loggedOutMiddleware, showLoginForm);
 router.post("/login", loggedOutMiddleware, authValidation, processLoginForm);
 router.get("/logout", loggedInMiddleware, processLogout);
@@ -92,6 +101,14 @@ router.post("/categories/assign/:projectId", loggedInMiddleware, requireRole("ad
 router.get("/categories/:id/edit", loggedInMiddleware, requireRole("admin"), showEditCategoryForm);
 router.post("/categories/:id", loggedInMiddleware, requireRole("admin"), categoryValidation, processEditCategoryForm);
 router.get("/categories/:id", showCategoryDetailsPage);
+
+// User routes
+router.get("/users", loggedInMiddleware, requireRole("admin"), showUsersPage);
+router.get("/users/create", loggedInMiddleware, requireRole("admin"), showCreateUserForm);
+router.get("/users/:id", loggedInMiddleware, requireRole("admin"), showUserDetailsPage);
+router.post("/users", loggedInMiddleware, requireRole("admin"), userValidation, processCreateUserForm);
+router.get("/users/:id/edit", loggedInMiddleware, requireRole("admin"), showUserEditPage);
+router.post("/users/:id", loggedInMiddleware, requireRole("admin"), userValidation, processUserEditForm);
 
 // error-handling routes
 router.get("/test-error", testErrorPage);
