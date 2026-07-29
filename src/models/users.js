@@ -50,15 +50,19 @@ const getAllUsers = async () => {
   return result.rows;
 };
 
-const createUser = async (name, email, hashPassword) => {
-  const defaultRole = "user";
+const createUser = async (name, email, hashPassword, role = "user") => {
+  const roles = ["admin", "user"];
+  if (!roles.includes(role)) {
+    throw new Error(`Invalid role: ${role}. Valid roles are: ${roles.join(", ")}`);
+  }
+
   const query = `
     INSERT INTO "user" (name, email, password_hash, role_id)
     VALUES ($1, $2, $3, (SELECT role_id FROM "role" WHERE role_name = $4))
     RETURNING user_id, name, email, created_at;
   `;
 
-  const queryParameters = [name, email, hashPassword, defaultRole];
+  const queryParameters = [name, email, hashPassword, role];
   const result = await db.query(query, queryParameters);
 
   if (result.rows.length === 0) {

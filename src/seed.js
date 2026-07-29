@@ -11,7 +11,7 @@ if (!email || !password) {
 }
 
 const hashedPassword = await hashPassword(password);
-const newUser = await createUser(name, email, hashedPassword);
+const newUser = await createUser(name, email, hashedPassword, "admin");
 
 if (newUser) {
   console.log(`Admin user created successfully: ${newUser.name} (${newUser.email})`);
