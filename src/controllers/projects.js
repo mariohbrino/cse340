@@ -159,10 +159,12 @@ const processEditProjectForm = async (request, response, next) => {
 const processVolunteerAction = async (request, response, next) => {
   const projectId = request.params.id;
   const userId = request.session.user.user_id;
+  const project = await getProjectDetails(projectId);
 
-  if (!userId) {
-    request.flash("error", "You must be logged in to volunteer for a project.");
-    return response.redirect(`/projects/${projectId}`);
+  if (!project) {
+    const err = new Error("Project not found");
+    err.status = 404;
+    return next(err);
   }
 
   try {
@@ -187,10 +189,12 @@ const processVolunteerAction = async (request, response, next) => {
 const processResignAction = async (request, response, next) => {
   const projectId = request.params.id;
   const userId = request.session.user.user_id;
+  const project = await getProjectDetails(projectId);
 
-  if (!userId) {
-    request.flash("error", "You must be logged in to resign from a project.");
-    return response.redirect(`/projects/${projectId}`);
+  if (!project) {
+    const err = new Error("Project not found");
+    err.status = 404;
+    return next(err);
   }
 
   try {

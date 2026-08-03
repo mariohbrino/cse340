@@ -38,6 +38,7 @@
           </span>
         </div>
 
+        <% if (isLoggedIn) { %>
         <div class="metadata-item">
           <span class="metadata-label">Volunteer:</span>
           <span class="metadata-value">
@@ -48,10 +49,11 @@
             <% } %>
           </span>
         </div>
+        <% } %>
       </div>
     </div>
 
-    <% if (user) { %>
+    <% if (isLoggedIn) { %>
     <div class="volunteer-section">
       <% if (!isVolunteered) { %>
       <form action="/projects/<%= project.project_id %>/volunteer" method="POST">

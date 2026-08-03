@@ -19,9 +19,8 @@
       <table class="dashboard-table">
         <thead>
           <tr>
-            <th>Project Name</th>
+            <th>Project Title</th>
             <th>Organization Name</th>
-            <th>Category</th>
             <th>Volunteered At</th>
             <th>Action</th>
           </tr>
@@ -31,7 +30,6 @@
           <tr>
             <td><%= volunteer.title %></td>
             <td><%= volunteer.organization_name %></td>
-            <td><%= volunteer.category_name %></td>
             <td>
               <% let volunteerDate = new Date(volunteer.volunteer_created_at); %>
               <%= volunteerDate.toLocaleDateString("en-US", { year:
