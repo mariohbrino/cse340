@@ -1,6 +1,7 @@
 import { getCategoryByProjectId } from "../models/categories.js";
 import { getAllOrganizations, getOrganizationById } from "../models/organizations.js";
 import { createProject, getProjectDetails, getUpcomingProjects, updateProject } from "../models/projects.js";
+import { isUserVolunteeredForProject, resignVolunteerFromProject, volunteerToProject } from "../models/volunteer.js";
 
 import { body, validationResult } from "express-validator";
 
@@ -49,10 +50,15 @@ const showProjectDetailsPage = async (request, response, next) => {
     return next(err);
   }
 
+  let isVolunteered = false;
   const categories = await getCategoryByProjectId(projectId);
 
+  if (request.session.user) {
+    isVolunteered = await isUserVolunteeredForProject(request.session.user.user_id, projectId);
+  }
+
   const title = "Project Details";
-  return response.render("projects/show", { title, project, categories });
+  return response.render("projects/show", { title, project, categories, isVolunteered });
 };
 
 const showNewProjectForm = async (request, response) => {
@@ -150,9 +156,67 @@ const processEditProjectForm = async (request, response, next) => {
   return response.redirect(`/projects/${updatedProjectId}`);
 };
 
+const processVolunteerAction = async (request, response, next) => {
+  const projectId = request.params.id;
+  const userId = request.session.user.user_id;
+
+  if (!userId) {
+    request.flash("error", "You must be logged in to volunteer for a project.");
+    return response.redirect(`/projects/${projectId}`);
+  }
+
+  try {
+    const isVolunteered = await isUserVolunteeredForProject(userId, projectId);
+
+    if (isVolunteered) {
+      request.flash("success", "User is already volunteered for this project.");
+    } else {
+      // User is not volunteered, so add them to the project
+      await volunteerToProject(userId, projectId);
+      request.flash("success", "You have successfully volunteered for the project.");
+    }
+
+    return response.redirect(`/projects/${projectId}`);
+  } catch (error) {
+    console.error("Error processing volunteer action:", error);
+    request.flash("error", "An error occurred while processing your request.");
+    return response.redirect(`/projects/${projectId}`);
+  }
+};
+
+const processResignAction = async (request, response, next) => {
+  const projectId = request.params.id;
+  const userId = request.session.user.user_id;
+
+  if (!userId) {
+    request.flash("error", "You must be logged in to resign from a project.");
+    return response.redirect(`/projects/${projectId}`);
+  }
+
+  try {
+    const isVolunteered = await isUserVolunteeredForProject(userId, projectId);
+
+    if (!isVolunteered) {
+      request.flash("error", "You are not currently volunteered for this project.");
+    } else {
+      // User is volunteered, so remove them from the project
+      await resignVolunteerFromProject(userId, projectId);
+      request.flash("success", "You have successfully resigned from the project.");
+    }
+
+    return response.redirect(`/projects/${projectId}`);
+  } catch (error) {
+    console.error("Error processing resign action:", error);
+    request.flash("error", "An error occurred while processing your request.");
+    return response.redirect(`/projects/${projectId}`);
+  }
+};
+
 export {
   processEditProjectForm,
   processNewProjectForm,
+  processResignAction,
+  processVolunteerAction,
   projectValidation,
   showEditProjectForm,
   showNewProjectForm,

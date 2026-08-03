@@ -4,8 +4,54 @@
   <h1><%= title %></h1>
 
   <h2>Dashboard</h2>
-  <p>Name: <%= name %></p>
-  <p>Username: <%= email %></p>
+  <div class="user-details">
+    <p>
+      Name:
+      <%= name %>
+    </p>
+    <p>Username: <%= email %></p>
+  </div>
+
+  <section class="dashboard-projects">
+    <h2>My Volunteered Projects</h2>
+    <% if (volunteers && volunteers.length > 0) { %>
+    <div class="dashboard-table-container">
+      <table class="dashboard-table">
+        <thead>
+          <tr>
+            <th>Project Name</th>
+            <th>Organization Name</th>
+            <th>Category</th>
+            <th>Volunteered At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% volunteers.forEach(volunteer => { %>
+          <tr>
+            <td><%= volunteer.title %></td>
+            <td><%= volunteer.organization_name %></td>
+            <td><%= volunteer.category_name %></td>
+            <td>
+              <% let volunteerDate = new Date(volunteer.volunteer_created_at); %>
+              <%= volunteerDate.toLocaleDateString("en-US", { year:
+            "numeric", month: "long", day: "numeric" }) %>
+            </td>
+
+            <td>
+              <form class="dashboard-resign" action="/projects/<%= volunteer.project_id %>/resign" method="POST">
+                <button class="dashboard-resign-button" type="submit">Resign</button>
+              </form>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <% } else { %>
+    <p>You have not volunteered for any projects yet.</p>
+    <% } %>
+  </section>
 </main>
 
 <%- include('partials/footer') %>

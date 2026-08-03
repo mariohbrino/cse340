@@ -35,6 +35,8 @@ import {
 import {
   processEditProjectForm,
   processNewProjectForm,
+  processResignAction,
+  processVolunteerAction,
   projectValidation,
   showEditProjectForm,
   showNewProjectForm,
@@ -74,6 +76,8 @@ router.post("/projects", loggedInMiddleware, requireRole("admin"), projectValida
 router.get("/projects/:id/edit", loggedInMiddleware, requireRole("admin"), showEditProjectForm);
 router.post("/projects/:id", loggedInMiddleware, requireRole("admin"), projectValidation, processEditProjectForm);
 router.get("/projects/:id", showProjectDetailsPage);
+router.post("/projects/:id/volunteer", loggedInMiddleware, processVolunteerAction);
+router.post("/projects/:id/resign", loggedInMiddleware, processResignAction);
 
 // Organization routes
 router.get("/organizations", showOrganizationsPage);
